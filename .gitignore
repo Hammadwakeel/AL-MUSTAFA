@@ -1,7 +1,6 @@
 # Compiled class files and build artifacts
 *.class
 bin/
-HypermallSystem.jar
 
 # Log files
 *.log
