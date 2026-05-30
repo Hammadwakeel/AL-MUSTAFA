@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="com.hypermall.controllers.InventoryController" style="-fx-padding: 15;">
+    
+    <Label text="Inventory Management" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" alignment="CENTER_LEFT" maxWidth="Infinity"/>
+    
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Quick Find:" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="searchField" promptText="Type SKU or Product Name..." HBox.hgrow="ALWAYS" style="-fx-background-radius: 5; -fx-padding: 8;"/>
+        <Button text="🔍 Search" onAction="#handleSearch" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-cursor: hand;"/>
+    </HBox>
+
+    <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
+        <columns>
+            <TableColumn fx:id="idCol" text="ID" prefWidth="50" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="nameCol" text="Product Name" prefWidth="250"/>
+            <TableColumn fx:id="priceCol" text="Retail Price" prefWidth="100" style="-fx-alignment: CENTER-RIGHT;"/>
+            <TableColumn fx:id="wholesalePriceCol" text="Wholesale Price" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;"/>
+            <TableColumn fx:id="stockCol" text="Current Stock" prefWidth="100" style="-fx-alignment: CENTER;"/>
+        </columns>
+        <placeholder><Label text="No products found matching your search."/></placeholder>
+    </TableView>
+
+    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+        <Button text="➕ Add New Product" onAction="#handleAddProduct" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand;"/>
+    </HBox>
+           
+    <Separator/>
+    <HBox alignment="CENTER_LEFT" style="-fx-padding: 5 0 0 0;">
+        <Label text="Tip: Right-click a row to Edit or Delete an item." style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        
+        <VBox alignment="CENTER_RIGHT" spacing="5">
+            <Label fx:id="dailyTotalLabel" text="Today's Total Revenue: Rs.0.00" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Label fx:id="totalStockValueLabel" text="Total Stock Value: Rs.0.00" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+        </VBox>
+    </HBox>
+</VBox>

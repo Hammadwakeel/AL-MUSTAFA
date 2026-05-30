@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="com.hypermall.controllers.ReportsController" style="-fx-padding: 15; -fx-background-color: #f4f6f9;">
+    
+    <Label text="📊 Business Reports &amp; Analytics" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" alignment="CENTER_LEFT" maxWidth="Infinity"/>
+    
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" HBox.hgrow="ALWAYS">
+            <Label text="Current Inventory Value" style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;"/>
+            <Label fx:id="totalStockValueLabel" text="Rs. 0.00" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+        </VBox>
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" HBox.hgrow="ALWAYS">
+            <Label text="Sales Revenue (Selected Range)" style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;"/>
+            <Label fx:id="rangeRevenueLabel" text="Rs. 0.00" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
+        <Button text="Today" onAction="#filterDaily" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
+        <Button text="This Week" onAction="#filterWeekly" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
+        <Button text="This Month" onAction="#filterMonthly" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
+        <Button text="This Year" onAction="#filterYearly" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;"/>
+        
+        <Separator orientation="VERTICAL"/>
+        
+        <Label text="Custom:" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="startDatePicker" promptText="Start Date" prefWidth="130"/>
+        <DatePicker fx:id="endDatePicker" promptText="End Date" prefWidth="130"/>
+        <Button text="Search Range" onAction="#filterCustom" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+    </HBox>
+
+    <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
+        <columns>
+            <TableColumn fx:id="idCol" text="Sale ID" prefWidth="70" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="dateCol" text="Date &amp; Time" prefWidth="160"/>
+            <TableColumn fx:id="productCol" text="Product Name" prefWidth="220"/>
+            <TableColumn fx:id="salesmanCol" text="Salesman" prefWidth="120"/>
+            <TableColumn fx:id="qtyCol" text="Qty" prefWidth="80" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="amountCol" text="Total Amount" prefWidth="120" style="-fx-alignment: CENTER-RIGHT;"/>
+        </columns>
+        <placeholder><Label text="No sales found for the selected date range."/></placeholder>
+    </TableView>
+</VBox>

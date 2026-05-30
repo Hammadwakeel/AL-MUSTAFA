@@ -1,0 +1,15 @@
+# Compiled class files and build artifacts
+*.class
+bin/
+HypermallSystem.jar
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# (Optional) Ignore the database if you don't want to upload your dummy data
+# Just remove the '#' on the next line if you want to keep the DB local only:
+# db/*.db

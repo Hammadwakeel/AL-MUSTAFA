@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="com.hypermall.controllers.CustomerController" style="-fx-background-color: #ffffff; -fx-padding: 15;">
+    
+    <Label text="Customer &amp; Khata Records" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #8e44ad;" alignment="CENTER_LEFT" maxWidth="Infinity"/>
+    
+    <TextField fx:id="customerSearchFieldMain" promptText="Search Customer Name or Phone..." style="-fx-padding: 8;"/>
+
+    <TableView fx:id="customerTable" VBox.vgrow="ALWAYS" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="custIdCol" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="custNameCol" text="Customer Name" prefWidth="250"/>
+            <TableColumn fx:id="custPhoneCol" text="Phone" prefWidth="180"/>
+            <TableColumn fx:id="custBalanceCol" text="Owes (Rs.)" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <Separator/>
+
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label fx:id="historyHeaderLabel" text="Select a customer to view purchase history" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="histDateCol" text="Date &amp; Time" prefWidth="200"/>
+                <TableColumn fx:id="histItemCol" text="Product Name" prefWidth="250"/>
+                <TableColumn fx:id="histQtyCol" text="Qty" prefWidth="80"/>
+                <TableColumn fx:id="histTotalCol" text="Total Paid (Rs.)" prefWidth="150"/>
+            </columns>
+            <placeholder><Label text="No history available for this customer."/></placeholder>
+        </TableView>
+    </VBox>
+
+    <HBox spacing="10">
+        <Button text="+ Register New Customer" onAction="#handleAddCustomerMain" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10;"/>
+    </HBox>
+</VBox>
