@@ -29,6 +29,10 @@
         <DatePicker fx:id="startDatePicker" promptText="Start Date" prefWidth="130"/>
         <DatePicker fx:id="endDatePicker" promptText="End Date" prefWidth="130"/>
         <Button text="Search Range" onAction="#filterCustom" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="Delete Selected" onAction="#deleteSelectedSale" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
     </HBox>
 
     <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">

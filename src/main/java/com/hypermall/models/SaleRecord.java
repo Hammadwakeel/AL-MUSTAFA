@@ -10,8 +10,9 @@ public class SaleRecord {
     private final DoubleProperty totalPrice;
     private final StringProperty date;
     private final StringProperty invoicePath;
+    private final IntegerProperty customerId;
 
-    public SaleRecord(int id, String productName, String salesman, int quantity, double totalPrice, String date, String invoicePath) {
+    public SaleRecord(int id, String productName, String salesman, int quantity, double totalPrice, String date, String invoicePath, int customerId) {
         this.id = new SimpleIntegerProperty(id);
         this.productName = new SimpleStringProperty(productName);
         this.salesman = new SimpleStringProperty(salesman != null ? salesman : "Admin");
@@ -19,6 +20,7 @@ public class SaleRecord {
         this.totalPrice = new SimpleDoubleProperty(totalPrice);
         this.date = new SimpleStringProperty(date);
         this.invoicePath = new SimpleStringProperty(invoicePath);
+        this.customerId = new SimpleIntegerProperty(customerId);
     }
 
     // Getters
@@ -29,6 +31,7 @@ public class SaleRecord {
     public double getTotalPrice() { return totalPrice.get(); }
     public String getDate() { return date.get(); }
     public String getInvoicePath() { return invoicePath.get(); }
+    public int getCustomerId() { return customerId.get(); }
 
     // Aliases specifically for the new ReportsController mapping
     public double getTotalAmount() { return totalPrice.get(); }
@@ -42,4 +45,5 @@ public class SaleRecord {
     public DoubleProperty totalPriceProperty() { return totalPrice; }
     public StringProperty dateProperty() { return date; }
     public StringProperty invoicePathProperty() { return invoicePath; }
+    public IntegerProperty customerIdProperty() { return customerId; }
 }

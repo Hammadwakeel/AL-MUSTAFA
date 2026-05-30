@@ -62,4 +62,16 @@ public class ProductDAO {
         }
         return 0.0;
     }
+
+    public static int getProductIdByName(String productName) {
+        String sql = "SELECT id FROM products WHERE name = ?";
+        try (Connection conn = DatabaseManager.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, productName);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return -1;
+    }
 }

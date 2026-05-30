@@ -74,12 +74,13 @@ public class SalesDAO {
             while (rs.next()) {
                 history.add(new SaleRecord(
                     rs.getInt("id"),
-                    rs.getString("product_name"), 
+                    rs.getString("product_name"),
                     rs.getString("salesman_name"),
-                    rs.getInt("quantity"), 
-                    rs.getDouble("total_price"), 
+                    rs.getInt("quantity"),
+                    rs.getDouble("total_price"),
                     rs.getString("sale_date"),
-                    rs.getString("invoice_path") 
+                    rs.getString("invoice_path"),
+                    customerId
                 ));
             }
         } catch (SQLException e) { e.printStackTrace(); }
@@ -93,7 +94,7 @@ public class SalesDAO {
     public static List<SaleRecord> getSalesByDateRange(String startDate, String endDate) {
         ensureSchemaUpToDate();
         List<SaleRecord> records = new ArrayList<>();
-        String sql = "SELECT s.id, p.name AS product_name, s.salesman_name, s.quantity, s.total_price, s.sale_date, s.invoice_path " +
+        String sql = "SELECT s.id, p.name AS product_name, s.salesman_name, s.quantity, s.total_price, s.sale_date, s.invoice_path, s.customer_id " +
                      "FROM sales s " +
                      "LEFT JOIN products p ON s.product_id = p.id " +
                      "WHERE DATE(s.sale_date, 'localtime') >= ? AND DATE(s.sale_date, 'localtime') <= ? " +
@@ -114,13 +115,57 @@ public class SalesDAO {
                     rs.getInt("quantity"),
                     rs.getDouble("total_price"),
                     rs.getString("sale_date"),
-                    rs.getString("invoice_path")
+                    rs.getString("invoice_path"),
+                    rs.getInt("customer_id")
                 ));
             }
         } catch (SQLException e) {
             System.out.println("Error fetching sales range: " + e.getMessage());
         }
         return records;
+    }
+
+    /**
+     * Deletes a sale record and restores the product stock.
+     * Also resets customer balance if the sale was linked to a customer.
+     * Returns true on success, false on failure.
+     */
+    public static boolean deleteSale(int saleId, int productId, int quantity, double totalPrice, int customerId, double oldBalance) {
+        ensureSchemaUpToDate();
+        try (Connection conn = DatabaseManager.connect()) {
+            conn.setAutoCommit(false);
+
+            // 1. Restore product stock
+            String restoreStock = "UPDATE products SET stock = stock + ? WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(restoreStock)) {
+                ps.setInt(1, quantity);
+                ps.setInt(2, productId);
+                ps.executeUpdate();
+            }
+
+            // 2. Restore customer balance (if linked to customer)
+            if (customerId > 0) {
+                String restoreCredit = "UPDATE customers SET balance = balance + ? WHERE id = ?";
+                try (PreparedStatement ps = conn.prepareStatement(restoreCredit)) {
+                    ps.setDouble(1, totalPrice);
+                    ps.setInt(2, customerId);
+                    ps.executeUpdate();
+                }
+            }
+
+            // 3. Delete the sale record
+            String deleteSale = "DELETE FROM sales WHERE id = ?";
+            try (PreparedStatement ps = conn.prepareStatement(deleteSale)) {
+                ps.setInt(1, saleId);
+                ps.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
