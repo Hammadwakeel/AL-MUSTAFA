@@ -12,30 +12,20 @@ set FX_PATH=
 REM ===== Search for JavaFX lib folder =====
 echo [SCAN] Searching for JavaFX SDK...
 
-REM Try direct paths first
 if exist "javafx-sdk-17\lib\javafx.controls.jar" (
     set FX_PATH=%CD%\javafx-sdk-17\lib
     goto :verify_fx
 )
-if exist "javafx-sdk-17\ javafx.controls.jar" (
-    set FX_PATH=%CD%\javafx-sdk-17
-    goto :verify_fx
-)
-if exist "javafx\lib\javafx.controls.jar" (
-    set FX_PATH=%CD%\javafx\lib
+if exist "javafx-sdk-17.0.2\lib\javafx.controls.jar" (
+    set FX_PATH=%CD%\javafx-sdk-17.0.2\lib
     goto :verify_fx
 )
 
-REM Search for javafx.controls.jar in current folder and subfolders
+REM Search for javafx.controls.jar in current folder
 for /f "delims=" %%i in ('dir /s /b javafx.controls.jar 2^>nul') do (
-    set "JAR_PATH=%%~dpi"
-    REM Remove trailing backslash and go up one level to lib folder
-    set "FX_PATH=!JAR_PATH:~0,-1!"
-    REM If it's already the lib folder, use it; otherwise try parent
-    if "!FX_PATH:~-3!"=="lib" (
-        goto :verify_fx
-    )
-    for %%j in ("!FX_PATH!") do set "FX_PATH=%%~dpjlib"
+    set "JAR_DIR=%%~dpi"
+    REM Remove trailing backslash
+    set "FX_PATH=!JAR_DIR:~0,-1!"
     goto :verify_fx
 )
 
@@ -44,11 +34,6 @@ if exist "javafx-sdk-17.zip" (
     echo [EXTRACT] Extracting JavaFX SDK...
     powershell -Command "Expand-Archive -Path 'javafx-sdk-17.zip' -DestinationPath '.' -Force"
     del "javafx-sdk-17.zip" 2>nul
-    goto :find_fx
-)
-
-if exist "javafx-sdk-17" (
-    echo [SCAN] Found javafx-sdk-17 folder, searching for lib...
     goto :find_fx
 )
 
@@ -71,43 +56,34 @@ if exist "javafx-sdk-17.zip" (
     echo 1. Go to: https://gluonhq.com/products/javafx/
     echo 2. Download SDK 17 for Windows
     echo 3. Extract to current folder
-    echo 4. Rename folder to: javafx-sdk-17
+    echo 4. Rename folder to: javafx-sdk-17.0.2
     pause
     exit /b 1
 )
 
 :find_fx
-REM Try common extraction patterns
-if exist "javafx-sdk-17\lib\javafx.controls.jar" (
-    set FX_PATH=%CD%\javafx-sdk-17\lib
+REM Try to find lib folder after extraction
+if exist "javafx-sdk-17.0.2\lib\javafx.controls.jar" (
+    set FX_PATH=%CD%\javafx-sdk-17.0.2\lib
     goto :verify_fx
 )
 
 REM Search recursively
 for /f "delims=" %%i in ('dir /s /b javafx.controls.jar 2^>nul') do (
-    set "FX_PATH=%%~dpi"
-    REM Remove javafx.controls.jar from path to get lib folder
-    set "FX_PATH=!FX_PATH:javafx.controls.jar=!"
-    goto :verify_fx
-)
-
-REM Check if files extracted flat (without folder)
-if exist "javafx.controls.jar" (
-    set FX_PATH=%CD%
+    set "JAR_DIR=%%~dpi"
+    set "FX_PATH=!JAR_DIR:~0,-1!"
     goto :verify_fx
 )
 
 echo [ERROR] Could not locate JavaFX library!
-dir /s /b *.jar 2>nul | findstr javafx
 pause
 exit /b 1
 
 :verify_fx
 if not exist "%FX_PATH%\javafx.controls.jar" (
     echo [ERROR] javafx.controls.jar not found at: %FX_PATH%
-    echo Searching again...
-    set FX_PATH=
-    goto :find_fx
+    pause
+    exit /b 1
 )
 echo [OK] JavaFX SDK found at: %FX_PATH%
 echo.
@@ -157,25 +133,23 @@ echo ========================================
 echo   All dependencies ready!
 echo ========================================
 echo.
-echo [PATH] JavaFX: %FX_PATH%
-echo.
 echo [START] Launching Hypermall POS System...
 echo.
 
-java --module-path "%FX_PATH%" --add-modules javafx.controls,javafx.fxml --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=ALL-UNNAMED -jar HypermallSystem.jar
+REM Build java command with proper quoting
+set JAVA_CMD=java --module-path "%FX_PATH%" --add-modules javafx.controls,javafx.fxml --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED --add-opens javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED -jar HypermallSystem.jar
+
+REM Execute the command
+%JAVA_CMD%
 
 if errorlevel 1 (
     echo.
     echo [ERROR] Application failed to start!
     echo.
-    echo Debug info:
-    echo   JavaFX Path: %FX_PATH%
-    echo   Contents:
-    dir "%FX_PATH%\*.jar" 2>nul | findstr /i javafx
-    echo.
     echo Checklist:
     echo   1. Java 17+ must be installed: java -version
     echo   2. Download Java from: https://adoptium.net/
+    echo   3. Make sure Java is in PATH
 )
 echo.
 pause
